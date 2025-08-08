@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英単語テスト生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 英単語テスト生成器</h1>
+        
+        <div class="section">
+            <h3>📁 CSVファイル読み込み</h3>
+            <div class="file-input-wrapper">
+                <input type="file" id="csvFile" class="file-input" accept=".csv" />
+                <div class="file-input-button">CSVファイルを選択してください</div>
+            </div>
+            <div id="fileStatus"></div>
+        </div>
+
+        <div class="section">
+            <h3>⚙️ テスト設定</h3>
+            <div class="input-group">
+                <label>開始番号:</label>
+                <input type="number" id="startNum" value="1" min="1">
+            </div>
+            <div class="input-group">
+                <label>終了番号:</label>
+                <input type="number" id="endNum" value="100" min="1">
+            </div>
+            <div class="input-group">
+                <label>問題数:</label>
+                <input type="number" id="questionCount" value="20" min="1" max="50">
+            </div>
+            <div class="input-group">
+                <label>出題形式:</label>
+                <select id="testType">
+                    <option value="english-to-japanese">英語 → 日本語</option>
+                    <option value="japanese-to-english">日本語 → 英語</option>
+                    <option value="mixed">ミックス</option>
+                </select>
+            </div>
+            <div id="rangeStatus" class="word-count"></div>
+        </div>
+
+        <div class="section">
+            <h3>🎯 テスト生成</h3>
+            <button id="generateTest" disabled>テスト問題を生成</button>
+            <button id="downloadPDF" disabled>PDFをダウンロード</button>
+            <div id="generateStatus"></div>
+        </div>
+
+        <div id="testPreview" class="preview" style="display:none;">
+            <h3>📝 テスト問題プレビュー</h3>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>GitHub: <a href="https://github.com/yourusername/vocabulary-test-generator" target="_blank">vocabulary-test-generator</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
