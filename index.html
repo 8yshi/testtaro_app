@@ -4,8 +4,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>英単語テスト生成器</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', 'Yu Gothic Medium', 'Hiragino Sans', 'Meiryo', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: #2d3748;
+            font-size: 1.3em;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4299e1;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .file-input-button:hover {
+            background: #3182ce;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .input-group label {
+            min-width: 100px;
+            font-weight: bold;
+        }
+
+        input[type="number"], select {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #4299e1;
+        }
+
+        button {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .word-count {
+            background: #bee3f8;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: #38a169;
+            background: #c6f6d5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        /* 印刷・表示用スタイル */
+        .printable-test {
+            background: white;
+            color: black;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: 'Yu Gothic Medium', 'Hiragino Sans', 'Meiryo', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .test-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .test-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .name-score {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .test-questions {
+            margin: 30px 0;
+        }
+
+        .print-question {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .question-instruction {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .answer-line {
+            border-bottom: 2px solid #333;
+            height: 25px;
+            margin-top: 10px;
+        }
+
+        .answer-section {
+            margin-top: 50px;
+            border-top: 2px solid #333;
+            padding-top: 30px;
+        }
+
+        .answer-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .answer-item {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .print-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .section {
+                display: none !important;
+            }
+            
+            .print-buttons {
+                display: none !important;
+            }
+            
+            .printable-test {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 20px !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -48,20 +309,271 @@
         <div class="section">
             <h3>🎯 テスト生成</h3>
             <button id="generateTest" disabled>テスト問題を生成</button>
-            <button id="downloadPDF" disabled>PDFをダウンロード</button>
             <div id="generateStatus"></div>
         </div>
 
-        <div id="testPreview" class="preview" style="display:none;">
-            <h3>📝 テスト問題プレビュー</h3>
-            <div id="previewContent"></div>
+        <!-- 印刷用テスト表示エリア -->
+        <div id="printableTest" style="display:none;">
+            <div class="print-buttons">
+                <button onclick="window.print()">🖨️ 印刷する</button>
+                <button onclick="showAnswers()" id="showAnswersBtn">📝 解答を表示</button>
+                <button onclick="hideAnswers()" id="hideAnswersBtn" style="display:none;">❌ 解答を隠す</button>
+            </div>
+            
+            <div class="printable-test" id="printTest">
+                <div class="test-header">
+                    <div class="test-title">英単語テスト</div>
+                    <div class="test-info">
+                        <span id="printDate"></span>
+                        <span id="printQuestionCount"></span>
+                    </div>
+                    <div class="name-score">
+                        <span>名前: ___________________</span>
+                        <span id="printScore"></span>
+                    </div>
+                </div>
+                
+                <div class="test-questions" id="printQuestions">
+                    <!-- 問題がここに挿入される -->
+                </div>
+                
+                <div class="answer-section" id="answerSection" style="display:none;">
+                    <div class="answer-title">解答</div>
+                    <div id="printAnswers">
+                        <!-- 解答がここに挿入される -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>GitHub: <a href="https://github.com/yourusername/vocabulary-test-generator" target="_blank">vocabulary-test-generator</a></p>
-    </footer>
+    <script>
+        let vocabularyData = [];
+        let currentTest = [];
 
-    <script src="script.js"></script>
+        // CSVファイル読み込み
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    parseCSV(event.target.result);
+                    document.querySelector('.file-input-button').textContent = `選択済み: ${file.name}`;
+                    updateRangeStatus();
+                } catch (error) {
+                    showError('CSVファイルの読み込みに失敗しました: ' + error.message);
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        });
+
+        // CSV解析
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            vocabularyData = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const columns = parseCSVLine(line);
+                
+                if (columns.length >= 3) {
+                    const num = parseInt(columns[0]);
+                    const english = columns[1].trim().replace(/^"|"$/g, '');
+                    const japanese = columns[2].trim().replace(/^"|"$/g, '');
+                    
+                    if (!isNaN(num) && english && japanese) {
+                        vocabularyData.push({
+                            number: num,
+                            english: english,
+                            japanese: japanese
+                        });
+                    }
+                }
+            }
+
+            if (vocabularyData.length === 0) {
+                throw new Error('有効な単語データが見つかりませんでした');
+            }
+
+            vocabularyData.sort((a, b) => a.number - b.number);
+            showSuccess(`${vocabularyData.length}個の単語を読み込みました`);
+            
+            const maxNum = Math.max(...vocabularyData.map(item => item.number));
+            document.getElementById('endNum').value = maxNum;
+            
+            document.getElementById('generateTest').disabled = false;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+
+        function updateRangeStatus() {
+            const startNum = parseInt(document.getElementById('startNum').value);
+            const endNum = parseInt(document.getElementById('endNum').value);
+            
+            if (vocabularyData.length > 0) {
+                const availableWords = vocabularyData.filter(item => 
+                    item.number >= startNum && item.number <= endNum
+                );
+                
+                const statusDiv = document.getElementById('rangeStatus');
+                statusDiv.textContent = `指定範囲内の単語数: ${availableWords.length}個`;
+                
+                const questionCount = parseInt(document.getElementById('questionCount').value);
+                if (availableWords.length < questionCount) {
+                    statusDiv.textContent += ` (問題数を${availableWords.length}以下にしてください)`;
+                    statusDiv.style.color = '#e53e3e';
+                } else {
+                    statusDiv.style.color = '#38a169';
+                }
+            }
+        }
+
+        // テスト生成
+        document.getElementById('generateTest').addEventListener('click', function() {
+            try {
+                generateTest();
+                createPrintableTest();
+                showSuccess('テスト問題を生成しました！印刷またはスクリーンショットでご利用ください。');
+            } catch (error) {
+                showError('テスト生成に失敗しました: ' + error.message);
+            }
+        });
+
+        function generateTest() {
+            const startNum = parseInt(document.getElementById('startNum').value);
+            const endNum = parseInt(document.getElementById('endNum').value);
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            const testType = document.getElementById('testType').value;
+
+            const availableWords = vocabularyData.filter(item => 
+                item.number >= startNum && item.number <= endNum
+            );
+
+            if (availableWords.length < questionCount) {
+                throw new Error(`範囲内の単語数(${availableWords.length}個)が問題数(${questionCount}個)より少ないです`);
+            }
+
+            const shuffled = availableWords.sort(() => 0.5 - Math.random());
+            const selectedWords = shuffled.slice(0, questionCount);
+
+            currentTest = selectedWords.map((word, index) => {
+                let questionType;
+                if (testType === 'mixed') {
+                    questionType = Math.random() < 0.5 ? 'english-to-japanese' : 'japanese-to-english';
+                } else {
+                    questionType = testType;
+                }
+
+                return {
+                    number: index + 1,
+                    word: word,
+                    type: questionType
+                };
+            });
+        }
+
+        function createPrintableTest() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+            
+            // ヘッダー情報設定
+            document.getElementById('printDate').textContent = `実施日: ${dateStr}`;
+            document.getElementById('printQuestionCount').textContent = `問題数: ${currentTest.length}問`;
+            document.getElementById('printScore').textContent = `点数: _____ / ${currentTest.length}`;
+            
+            // 問題生成
+            const questionsDiv = document.getElementById('printQuestions');
+            questionsDiv.innerHTML = '';
+            
+            currentTest.forEach(item => {
+                const question = item.type === 'english-to-japanese' 
+                    ? item.word.english 
+                    : item.word.japanese;
+                
+                const questionLabel = item.type === 'english-to-japanese' 
+                    ? '(日本語で答えてください)' 
+                    : '(英語で答えてください)';
+                
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'print-question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">問${item.number}. ${question}</div>
+                    <div class="question-instruction">${questionLabel}</div>
+                    <div>答え: <span class="answer-line"></span></div>
+                `;
+                questionsDiv.appendChild(questionDiv);
+            });
+            
+            // 解答生成
+            const answersDiv = document.getElementById('printAnswers');
+            answersDiv.innerHTML = '';
+            
+            currentTest.forEach(item => {
+                const answer = item.type === 'english-to-japanese' 
+                    ? item.word.japanese 
+                    : item.word.english;
+                
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'answer-item';
+                answerDiv.textContent = `問${item.number}. ${answer}`;
+                answersDiv.appendChild(answerDiv);
+            });
+            
+            // 印刷用エリア表示
+            document.getElementById('printableTest').style.display = 'block';
+        }
+
+        function showAnswers() {
+            document.getElementById('answerSection').style.display = 'block';
+            document.getElementById('showAnswersBtn').style.display = 'none';
+            document.getElementById('hideAnswersBtn').style.display = 'inline-block';
+        }
+
+        function hideAnswers() {
+            document.getElementById('answerSection').style.display = 'none';
+            document.getElementById('showAnswersBtn').style.display = 'inline-block';
+            document.getElementById('hideAnswersBtn').style.display = 'none';
+        }
+
+        // 入力値変更時に範囲状態更新
+        ['startNum', 'endNum', 'questionCount'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateRangeStatus);
+        });
+
+        // ユーティリティ関数
+        function showError(message) {
+            const statusDiv = document.getElementById('generateStatus') || document.getElementById('fileStatus');
+            statusDiv.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        function showSuccess(message) {
+            const statusDiv = document.getElementById('generateStatus') || document.getElementById('fileStatus');
+            statusDiv.innerHTML = `<div class="success">${message}</div>`;
+        }
+    </script>
 </body>
 </html>
