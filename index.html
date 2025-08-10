@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>単語テスト太郎 | 無料でCSVから問題作成・印刷</title>
     <meta name="description" content="CSVファイルから英単語テストを無料で簡単生成。範囲指定、ランダム出題、印刷対応。学校・塾・個人学習に最適な教材作成ツール。">
@@ -47,49 +47,94 @@
     }
     </script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Arial', 'Yu Gothic Medium', 'Hiragino Sans', 'Meiryo', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Yu Gothic Medium', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
             min-height: 100vh;
             color: #333;
+            line-height: 1.6;
         }
 
         .container {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e1e1e1;
         }
 
         h1 {
             text-align: center;
-            color: #4a5568;
-            margin-bottom: 30px;
+            color: #222;
+            margin-bottom: 40px;
             font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .taro-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 2px solid #eee;
+            overflow: hidden;
+        }
+
+        .taro-face {
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjUiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMCAxNUM0IDE1IDQgMjUgMTAgMjVIMjVIMzVDNDEgMjUgNDEgMTUgMzUgMTVIMjVIMTBaIiBmaWxsPSJibGFjayIvPgo8ZWxsaXBzZSBjeD0iMTYiIGN5PSIyOCIgcng9IjQiIHJ5PSIyIiBmaWxsPSJibGFjayIvPgo8ZWxsaXBzZSBjeD0iMzQiIGN5PSIyOCIgcng9IjQiIHJ5PSIyIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMjEgMzNMMjUgMzZMMjkgMzMiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xNSA0MEMxNSA0MCAyMCA0MyAyNSA0M0MzMCA0MyAzNSA0MCAzNSA0MCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f7fafc;
-            border-radius: 10px;
-            border-left: 4px solid #4299e1;
+            margin-bottom: 30px;
+            padding: 0;
         }
 
         .section h3 {
-            margin-top: 0;
-            color: #2d3748;
-            font-size: 1.3em;
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
         }
 
         .file-input-wrapper {
             position: relative;
-            display: inline-block;
+            display: block;
             cursor: pointer;
             width: 100%;
+            margin-bottom: 10px;
         }
 
         .file-input {
@@ -101,96 +146,113 @@
         }
 
         .file-input-button {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #4299e1;
-            color: white;
-            border-radius: 8px;
-            border: none;
+            display: block;
+            padding: 12px 16px;
+            background: #fff;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 2px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-            width: 100%;
+            font-size: 14px;
+            transition: all 0.2s ease;
             text-align: center;
-            box-sizing: border-box;
         }
 
         .file-input-button:hover {
-            background: #3182ce;
+            border-color: #999;
+            background: #f8f8f8;
         }
 
         .input-group {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 16px;
             align-items: center;
         }
 
         .input-group label {
             min-width: 100px;
-            font-weight: bold;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
         }
 
-        input[type="number"], select {
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 16px;
+        input[type="number"], 
+        input[type="text"], 
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            font-size: 14px;
             flex: 1;
+            background: white;
         }
 
-        input[type="number"]:focus, select:focus {
+        input[type="number"]:focus, 
+        input[type="text"]:focus, 
+        select:focus {
             outline: none;
-            border-color: #4299e1;
+            border-color: #666;
         }
 
         button {
-            background: linear-gradient(135deg, #48bb78, #38a169);
+            background: #333;
             color: white;
-            padding: 12px 30px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 2px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 10px 5px;
+            transition: all 0.2s ease;
+            margin: 4px 4px 4px 0;
+            font-weight: 500;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+            background: #555;
         }
 
         button:disabled {
-            background: #a0aec0;
+            background: #ccc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .word-count {
-            background: #bee3f8;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 2px;
+            margin-bottom: 16px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid #eee;
         }
 
         .error {
-            color: #e53e3e;
-            background: #fed7d7;
-            padding: 10px;
-            border-radius: 6px;
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 2px;
             margin-top: 10px;
+            border: 1px solid #ffcdd2;
+            font-size: 14px;
         }
 
         .success {
-            color: #38a169;
-            background: #c6f6d5;
-            padding: 10px;
-            border-radius: 6px;
+            color: #388e3c;
+            background: #e8f5e8;
+            padding: 12px;
+            border-radius: 2px;
             margin-top: 10px;
+            border: 1px solid #c8e6c9;
+            font-size: 14px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            line-height: 1.4;
         }
 
         /* 印刷・表示用スタイル */
@@ -199,12 +261,12 @@
             color: black;
             padding: 30px;
             margin: 20px 0;
-            border-radius: 8px;
+            border-radius: 2px;
             font-family: 'Yu Gothic Medium', 'Hiragino Sans', 'Meiryo', sans-serif;
             font-size: 16px;
             line-height: 1.8;
             max-width: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
 
         .test-header {
@@ -216,8 +278,9 @@
 
         .test-title {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 15px;
+            color: #222;
         }
 
         .test-info {
@@ -225,12 +288,14 @@
             justify-content: space-between;
             font-size: 14px;
             margin-bottom: 10px;
+            color: #555;
         }
 
         .name-score {
             display: flex;
             justify-content: space-between;
             font-size: 14px;
+            color: #555;
         }
 
         .test-questions {
@@ -244,39 +309,46 @@
 
         .question-text {
             font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 500;
+            margin-bottom: 8px;
             line-height: 1.3;
+            color: #222;
         }
 
         .answer-line {
-            border-bottom: 2px solid #333;
+            border-bottom: 1px solid #333;
             height: 20px;
-            margin-top: 5px;
+            margin-top: 8px;
+            display: inline-block;
+            min-width: 200px;
         }
 
         .answer-section {
             margin-top: 50px;
-            border-top: 2px solid #333;
+            border-top: 1px solid #333;
             padding-top: 30px;
         }
 
         .answer-title {
             text-align: center;
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 30px;
+            color: #222;
         }
 
         .answer-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 16px;
             line-height: 1.4;
+            color: #333;
         }
 
         .print-buttons {
             text-align: center;
             margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
         }
 
         .print-footer {
@@ -296,7 +368,7 @@
             
             .container {
                 box-shadow: none !important;
-                border-radius: 0 !important;
+                border: none !important;
                 padding: 0 !important;
             }
             
@@ -309,53 +381,154 @@
             }
             
             .printable-test {
-                box-shadow: none !important;
+                border: none !important;
                 margin: 0 !important;
                 padding: 20px !important;
+            }
+        }
+
+        /* モーダル用スタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 2px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #222;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal h3 {
+            color: #333;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .modal p, .modal li {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .modal ul {
+            padding-left: 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-group label {
+                margin-bottom: 4px;
+                min-width: auto;
+            }
+            
+            button {
+                width: 100%;
+                margin: 4px 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📚 単語テスト太郎</h1>
+        <h1>
+            単語テスト太郎
+            <div class="logo-container" onclick="openModal()">
+                <div class="taro-logo">
+                    <div class="taro-face"></div>
+                </div>
+            </div>
+        </h1>
         
         <div class="section">
-            <h3>📁 CSVファイル読み込み</h3>
+            <h3>ファイル読み込み</h3>
             <div class="file-input-wrapper">
                 <input type="file" id="csvFile" class="file-input" accept=".csv" />
                 <div class="file-input-button">CSVファイルを選択してください</div>
             </div>
+            <div class="help-text">形式: 番号, 単語, 意味 の順で3列</div>
             <div id="fileStatus"></div>
         </div>
 
         <div class="section">
-            <h3>⚙️ テスト設定</h3>
+            <h3>テスト設定</h3>
             <div class="input-group">
-                <label>開始番号:</label>
+                <label>開始番号</label>
                 <input type="number" id="startNum" value="1" min="1">
             </div>
             <div class="input-group">
-                <label>終了番号:</label>
+                <label>終了番号</label>
                 <input type="number" id="endNum" value="100" min="1">
             </div>
             <div class="input-group">
-                <label>問題数:</label>
+                <label>問題数</label>
                 <input type="number" id="questionCount" value="20" min="1" max="50">
             </div>
             <div class="input-group">
-                <label>出題形式:</label>
+                <label>出題形式</label>
                 <select id="testType">
                     <option value="english-to-japanese">単語 → 意味</option>
                     <option value="japanese-to-english">意味 → 単語</option>
                     <option value="mixed">ミックス</option>
                 </select>
             </div>
+            <div class="input-group">
+                <label>必出問題</label>
+                <input type="text" id="requiredQuestions" placeholder="例: 5,12,23,67">
+            </div>
+            <div class="help-text">必ず出題したい単語の番号をカンマ区切りで入力</div>
             <div id="rangeStatus" class="word-count"></div>
         </div>
 
         <div class="section">
-            <h3>🎯 テスト生成</h3>
+            <h3>テスト生成</h3>
             <button id="generateTest" disabled>テスト問題を生成</button>
             <div id="generateStatus"></div>
         </div>
@@ -363,9 +536,9 @@
         <!-- 印刷用テスト表示エリア -->
         <div id="printableTest" style="display:none;">
             <div class="print-buttons">
-                <button onclick="window.print()">🖨️ 印刷する</button>
-                <button onclick="showAnswers()" id="showAnswersBtn">📝 解答を表示</button>
-                <button onclick="hideAnswers()" id="hideAnswersBtn" style="display:none;">❌ 解答を隠す</button>
+                <button onclick="window.print()">印刷する</button>
+                <button onclick="showAnswers()" id="showAnswersBtn">解答を表示</button>
+                <button onclick="hideAnswers()" id="hideAnswersBtn" style="display:none;">解答を隠す</button>
             </div>
             
             <div class="printable-test" id="printTest">
@@ -389,13 +562,83 @@
                     <div class="answer-title">解答</div>
                     <div id="printAnswers">
                         <!-- 解答がここに挿入される -->
-                  </div>
+                    </div>
                 </div>
                 
                 <div class="print-footer">
                     Generated by 単語テスト太郎 (https://profound-naiad-cc998e.netlify.app)
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- モーダル -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <h2>単語テスト太郎について</h2>
+            
+            <h3>📚 サービス概要</h3>
+            <p>単語テスト太郎は、CSVファイルから単語テストを簡単に生成できる無料のWebアプリケーションです。学校・塾・個人学習での教材作成をサポートします。</p>
+            
+            <h3>✨ 主な機能</h3>
+            <ul>
+                <li>CSVファイルからの単語データ読み込み</li>
+                <li>出題範囲の自由設定</li>
+                <li>必出問題の指定機能</li>
+                <li>複数の出題形式（単語→意味、意味→単語、ミックス）</li>
+                <li>印刷対応の美しいテスト用紙生成</li>
+                <li>解答用紙の自動生成</li>
+            </ul>
+            
+            <h3>🎯 対象ユーザー</h3>
+            <ul>
+                <li>英語教師・講師の方</li>
+                <li>塾・予備校関係者</li>
+                <li>学習者（高校生・大学生・社会人）</li>
+                <li>保護者の方</li>
+            </ul>
+            
+            <h3>📄 CSVファイル形式</h3>
+            <p>以下の形式でCSVファイルを作成してください：</p>
+            <p><code>番号,単語,意味</code></p>
+            <p>例：<code>1,"apple","りんご"</code></p>
+            
+            <h3>🔒 プライバシーポリシー</h3>
+            
+            <h4>情報の収集</h4>
+            <p>当サイトでは以下の情報を収集する場合があります：</p>
+            <ul>
+                <li>アクセス解析のための匿名データ（Google Analytics）</li>
+                <li>サイト改善のための利用状況データ</li>
+            </ul>
+            
+            <h4>アップロードファイルの取り扱い</h4>
+            <p>アップロードされたCSVファイルは：</p>
+            <ul>
+                <li>お客様のブラウザ内でのみ処理されます</li>
+                <li>サーバーに送信・保存されることはありません</li>
+                <li>第三者に共有されることはありません</li>
+            </ul>
+            
+            <h4>Cookie の使用</h4>
+            <p>当サイトでは、サービス向上のためにCookieを使用する場合があります。ブラウザの設定でCookieを無効にすることができます。</p>
+            
+            <h4>第三者サービス</h4>
+            <p>当サイトでは以下の第三者サービスを利用しています：</p>
+            <ul>
+                <li>Google Analytics（アクセス解析）</li>
+                <li>Netlify（ホスティング）</li>
+            </ul>
+            
+            <h4>免責事項</h4>
+            <p>当サービスの利用により生じた損害について、運営者は一切の責任を負いません。お客様の責任においてご利用ください。</p>
+            
+            <h4>お問い合わせ</h4>
+            <p>プライバシーポリシーに関するご質問は、GitHubのIssueよりお問い合わせください。</p>
+            
+            <p><strong>最終更新日：2025年8月10日</strong></p>
         </div>
     </div>
 
@@ -485,6 +728,7 @@
         function updateRangeStatus() {
             const startNum = parseInt(document.getElementById('startNum').value);
             const endNum = parseInt(document.getElementById('endNum').value);
+            const requiredQuestions = document.getElementById('requiredQuestions').value;
             
             if (vocabularyData.length > 0) {
                 const availableWords = vocabularyData.filter(item => 
@@ -492,14 +736,38 @@
                 );
                 
                 const statusDiv = document.getElementById('rangeStatus');
-                statusDiv.textContent = `指定範囲内の単語数: ${availableWords.length}個`;
+                let statusText = `指定範囲内の単語数: ${availableWords.length}個`;
+                
+                // 必出問題のチェック
+                if (requiredQuestions.trim()) {
+                    const requiredNums = parseRequiredQuestions(requiredQuestions);
+                    const validRequired = requiredNums.filter(num => 
+                        num >= startNum && num <= endNum && 
+                        vocabularyData.some(item => item.number === num)
+                    );
+                    
+                    if (validRequired.length > 0) {
+                        statusText += ` | 必出問題: ${validRequired.length}個`;
+                    }
+                    
+                    const invalidRequired = requiredNums.filter(num => 
+                        num < startNum || num > endNum || 
+                        !vocabularyData.some(item => item.number === num)
+                    );
+                    
+                    if (invalidRequired.length > 0) {
+                        statusText += ` | 無効な番号: ${invalidRequired.join(',')}`;
+                    }
+                }
+                
+                statusDiv.textContent = statusText;
                 
                 const questionCount = parseInt(document.getElementById('questionCount').value);
                 if (availableWords.length < questionCount) {
                     statusDiv.textContent += ` (問題数を${availableWords.length}以下にしてください)`;
-                    statusDiv.style.color = '#e53e3e';
+                    statusDiv.style.color = '#d32f2f';
                 } else {
-                    statusDiv.style.color = '#38a169';
+                    statusDiv.style.color = '#388e3c';
                 }
             }
         }
@@ -520,7 +788,9 @@
             const endNum = parseInt(document.getElementById('endNum').value);
             const questionCount = parseInt(document.getElementById('questionCount').value);
             const testType = document.getElementById('testType').value;
+            const requiredQuestions = document.getElementById('requiredQuestions').value;
 
+            // 範囲内の単語を取得
             const availableWords = vocabularyData.filter(item => 
                 item.number >= startNum && item.number <= endNum
             );
@@ -529,10 +799,35 @@
                 throw new Error(`範囲内の単語数(${availableWords.length}個)が問題数(${questionCount}個)より少ないです`);
             }
 
-            const shuffled = availableWords.sort(() => 0.5 - Math.random());
-            const selectedWords = shuffled.slice(0, questionCount);
+            // 必出問題の処理
+            let requiredWords = [];
+            if (requiredQuestions.trim()) {
+                const requiredNums = parseRequiredQuestions(requiredQuestions);
+                requiredWords = vocabularyData.filter(item => 
+                    requiredNums.includes(item.number) && 
+                    item.number >= startNum && 
+                    item.number <= endNum
+                );
+                
+                if (requiredWords.length > questionCount) {
+                    throw new Error(`必出問題数(${requiredWords.length}個)が総問題数(${questionCount}個)より多いです`);
+                }
+            }
 
-            currentTest = selectedWords.map((word, index) => {
+            // ランダム問題の選択（必出問題を除く）
+            const remainingWords = availableWords.filter(word => 
+                !requiredWords.some(req => req.number === word.number)
+            );
+            
+            const randomCount = questionCount - requiredWords.length;
+            const shuffledRemaining = remainingWords.sort(() => 0.5 - Math.random());
+            const randomWords = shuffledRemaining.slice(0, randomCount);
+
+            // 必出問題 + ランダム問題を結合してシャッフル
+            const allSelectedWords = [...requiredWords, ...randomWords];
+            const finalShuffled = allSelectedWords.sort(() => 0.5 - Math.random());
+
+            currentTest = finalShuffled.map((word, index) => {
                 let questionType;
                 if (testType === 'mixed') {
                     questionType = Math.random() < 0.5 ? 'english-to-japanese' : 'japanese-to-english';
@@ -543,9 +838,19 @@
                 return {
                     number: index + 1,
                     word: word,
-                    type: questionType
+                    type: questionType,
+                    isRequired: requiredWords.some(req => req.number === word.number)
                 };
             });
+        }
+
+        // 必出問題番号をパース
+        function parseRequiredQuestions(input) {
+            if (!input.trim()) return [];
+            
+            return input.split(',')
+                .map(s => parseInt(s.trim()))
+                .filter(num => !isNaN(num) && num > 0);
         }
 
         function createPrintableTest() {
@@ -607,7 +912,7 @@
         }
 
         // 入力値変更時に範囲状態更新
-        ['startNum', 'endNum', 'questionCount'].forEach(id => {
+        ['startNum', 'endNum', 'questionCount', 'requiredQuestions'].forEach(id => {
             document.getElementById(id).addEventListener('input', updateRangeStatus);
         });
 
@@ -620,6 +925,23 @@
         function showSuccess(message) {
             const statusDiv = document.getElementById('generateStatus') || document.getElementById('fileStatus');
             statusDiv.innerHTML = `<div class="success">${message}</div>`;
+        }
+
+        // モーダル制御
+        function openModal() {
+            document.getElementById('infoModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // モーダル外クリックで閉じる
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
         }
     </script>
 </body>
